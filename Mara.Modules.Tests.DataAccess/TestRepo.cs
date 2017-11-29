@@ -7,10 +7,16 @@ using Mara.Modules.DataAccess;
 
 namespace Mara.Modules.Tests.DataAccess
 {
-    internal class TestRepo: DataRepository
+    internal class TestRepo: RepositoryBase
     {
-        public TestRepo(string connectionString) : base(connectionString)
+        public TestRepo(string connectionStringName, string configFilePath) : base(connectionStringName, configFilePath)
         {
+        }
+
+        public void M()
+        {
+            executor.Execute("SELECT * FROM Employees");
+            executor.Execute("", "", "", "");
         }
     }
 }

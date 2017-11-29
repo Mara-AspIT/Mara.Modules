@@ -8,6 +8,9 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 
+#if DEBUG
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Mara.Modules.Tests.DataAccess")]
+#endif
 namespace Mara.Modules.DataAccess
 {
     /// <summary>
@@ -34,7 +37,7 @@ namespace Mara.Modules.DataAccess
         /// <exception cref="ArgumentException"/>
         /// <exception cref="SqlException"/>
         /// <exception cref="InvalidOperationException"/>
-        public Executor(string connectionString)
+        internal Executor(string connectionString)
         {
             if(String.IsNullOrWhiteSpace(connectionString))
                 throw new ArgumentException("Null, empty or white-space",
@@ -49,6 +52,7 @@ namespace Mara.Modules.DataAccess
             {
                 throw;
             }
+            this.connectionString = connectionString;
         }
         #endregion
 
@@ -74,14 +78,7 @@ namespace Mara.Modules.DataAccess
                 throw new ArgumentException("Null, empty or white-space", nameof(sqlQuery));
             try
             {
-                DataSet resultSet = new DataSet();
-                using(SqlDataAdapter adapter = new SqlDataAdapter(
-                    new SqlCommand(sqlQuery, new SqlConnection(connectionString)))
-                    )
-                {
-                    adapter.Fill(resultSet);
-                }
-                return resultSet;
+                return Process(new SqlCommand(sqlQuery));
             }
             catch(Exception)
             {
@@ -110,21 +107,14 @@ namespace Mara.Modules.DataAccess
             try
             {
                 DataSet resultSet = new DataSet();
-                using(SqlConnection connection = new SqlConnection(connectionString))
+                using(SqlCommand command = new SqlCommand(storedProcedureName))
                 {
-                    using(SqlCommand command = new SqlCommand(storedProcedureName,
-                        connection))
+                    command.CommandType = CommandType.StoredProcedure;
+                    if(storedProcedureParameters.Length > 0)    // params array is always not null.
                     {
-                        command.CommandType = CommandType.StoredProcedure;
-                        if(storedProcedureParameters.Length > 0)    // params array is always not null.
-                        {
-                            command.Parameters.AddRange(storedProcedureParameters);
-                        }
-                        using(SqlDataAdapter adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(resultSet);
-                        }
+                        command.Parameters.AddRange(storedProcedureParameters);
                     }
+                    resultSet = Process(command);
                 }
                 return resultSet;
             }
@@ -132,6 +122,27 @@ namespace Mara.Modules.DataAccess
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="SqlException"/>
+        DataSet Process(SqlCommand command)
+        {
+            if(command is null)
+                throw new ArgumentNullException(nameof(command));
+            if(command.Connection is null)
+                command.Connection = new SqlConnection(connectionString);
+            DataSet resultSet = new DataSet();
+            using(SqlDataAdapter adapter = new SqlDataAdapter(command))
+            {
+                adapter.Fill(resultSet);
+            }
+            return resultSet;
         }
         #endregion
     }
