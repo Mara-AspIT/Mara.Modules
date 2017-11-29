@@ -11,10 +11,10 @@ namespace Mara.Modules.DataAccess
     /// <summary>Abstract base class representing af repository of data.</summary>
     public abstract class DataRepository
     {
-        /// <summary>The agregated instance of <see cref="QueryExecutor"/>.</summary>
-        protected QueryExecutor executor;
+        /// <summary>The agregated instance of <see cref="Executor"/>.</summary>
+        protected Executor executor;
 
-        /// <summary>Creates a new <see cref="DataRepository"/> object when called from a deriving class. The specified connection string is passes directly to <see cref="QueryExecutor.QueryExecutor(string)"/> constructor.</summary>
+        /// <summary>Creates a new <see cref="DataRepository"/> object when called from a deriving class. The specified connection string is passes directly to <see cref="Executor.Executor(string)"/> constructor.</summary>
         /// <param name="connectionString">The connection string used to connect to the specified database.</param>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="SqlException"/>
@@ -23,7 +23,7 @@ namespace Mara.Modules.DataAccess
         {
             try
             {
-                executor = new QueryExecutor(connectionString);
+                executor = new Executor(connectionString);
             }
             catch(Exception)
             {

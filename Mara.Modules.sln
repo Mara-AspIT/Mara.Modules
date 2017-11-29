@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Modules.DataAccess", "Mara.Modules.DataAccess\Mara.Modules.DataAccess.csproj", "{F6CA7668-AB9C-4383-912C-E3ECD0136DA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Modules.Tests.DataAccess", "Mara.Modules.Tests.DataAccess\Mara.Modules.Tests.DataAccess.csproj", "{F8A0DA98-4254-433D-BB52-0E6A66D3D276}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F6CA7668-AB9C-4383-912C-E3ECD0136DA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6CA7668-AB9C-4383-912C-E3ECD0136DA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6CA7668-AB9C-4383-912C-E3ECD0136DA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A0DA98-4254-433D-BB52-0E6A66D3D276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A0DA98-4254-433D-BB52-0E6A66D3D276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A0DA98-4254-433D-BB52-0E6A66D3D276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A0DA98-4254-433D-BB52-0E6A66D3D276}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
