@@ -5,9 +5,6 @@
 *  Repository: https://github.com/Mara-AspIT/Mara.Modules.git                                     *
 **************************************************************************************************/
 using System;
-using System.Configuration;
-using System.IO;
-using System.Linq;
 using System.Xml;
 
 namespace Mara.Modules.DataAccess
@@ -15,22 +12,20 @@ namespace Mara.Modules.DataAccess
     /// <summary>Abstract base class representing af repository of data.</summary>
     public abstract class RepositoryBase
     {
-        /// <summary>The agregated instance of <see cref="Executor"/>.</summary>
+        #region Fields
+        /// <summary>The aggregated instance of <see cref="Executor"/>.</summary>
         protected Executor executor;
+        #endregion
 
-        /// <summary>
-        /// Creates a new <see cref="RepositoryBase"/> object when called from a deriving class. 
-        /// The specified connection string is passes directly to 
-        /// <see cref="Executor.Executor(String)"/> constructor.
-        /// </summary>
+
+        #region Constructors
+        /// <summary>Creates a new <see cref="RepositoryBase"/> object when called from a deriving class. The specified connection string is passes directly to <see cref="Executor.Executor(String)"/> constructor.</summary>
         /// <param name="databaseName">The name of the database to conect to.</param>
-        /// <param name="configurationFilePath">
-        /// The path to the configuration file.
-        /// </param>
+        /// <param name="configurationFilePath">The path to the configuration file.</param>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="SqlException"/>
         /// <exception cref="InvalidOperationException"/>
-        public RepositoryBase(string connectionStringName, string configurationFilePath)
+        protected RepositoryBase(string connectionStringName, string configurationFilePath)
         {
             try
             {
@@ -42,7 +37,16 @@ namespace Mara.Modules.DataAccess
                 throw;
             }
         }
+        #endregion
 
+
+        #region Methods
+        /// <summary>Loads the connection string from the specified configuration file.</summary>
+        /// <param name="connectionStringName">The name of the connection string in the configuaration file.</param>
+        /// <param name="configurationFilePath">The path to the configuration file. Can be both your app.config or aany external config file.</param>
+        /// <returns>The connection string, belonging to the prvide connection string name.</returns>
+        /// <exception cref="ArgumentException"/>
+        /// <exception cref="DataAccessException"/>
         protected virtual string LoadConnectionString(string connectionStringName, string configurationFilePath)
         {
             if(String.IsNullOrWhiteSpace(connectionStringName))
@@ -80,6 +84,7 @@ namespace Mara.Modules.DataAccess
             {
                 throw new DataAccessException("See inner exception for details", e);
             }
-        }
+        } 
+        #endregion
     }
 }

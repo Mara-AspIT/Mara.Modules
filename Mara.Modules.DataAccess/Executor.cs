@@ -13,30 +13,20 @@ using System.Data.SqlClient;
 #endif
 namespace Mara.Modules.DataAccess
 {
-    /// <summary>
-    /// Executes provided queries against an SQL database.
-    /// </summary>
+    /// <summary>Executes provided queries against an SQL database.</summary>
     public class Executor
     {
         #region Constants
-        /// <summary>
-        /// The connection string.
-        /// </summary>
+        /// <summary>The connection string.</summary>
         protected readonly string connectionString;
         #endregion
 
 
         #region Constructors
-        /// <summary>
-        /// Creates a new <see cref="Executor"/> object. The specified connection string
-        /// is used to attempt to connect to a database, specified in the string.
-        /// </summary>
-        /// <param name="connectionString">
-        /// The connection string used to connect to the specified database.
-        /// </param>
+        /// <summary>Creates a new <see cref="Executor"/> object. The specified connection string is used to attempt to connect to a database, specified in the string.</summary>
+        /// <param name="connectionString">The connection string used to connect to the specified database.</param>
         /// <exception cref="ArgumentException"/>
-        /// <exception cref="SqlException"/>
-        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="DataAccessException"/>
         internal Executor(string connectionString)
         {
             if(String.IsNullOrWhiteSpace(connectionString))
@@ -48,9 +38,9 @@ namespace Mara.Modules.DataAccess
                 connection.Open();
                 connection.Close();
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                throw;
+                throw new DataAccessException("See inner exception for details", e);
             }
             this.connectionString = connectionString;
         }
@@ -58,17 +48,9 @@ namespace Mara.Modules.DataAccess
 
 
         #region Methods
-        /// <summary>
-        /// Executes the provided SQL query and returns a <see cref="DataSet"/> containing any 
-        /// data returned from the database. Will also work for non returnning queries such as
-        /// INSERT, UPDATE etc. The returned <see cref="DataSet"/> will be empty in this case.
-        /// </summary>
-        /// <param name="sqlQuery">
-        /// The SQL query to execute.
-        /// </param>
-        /// <returns>
-        /// A <see cref="DataSet"/> containing any data returned from the database.
-        /// </returns>
+        /// <summary>Executes the provided SQL query and returns a <see cref="DataSet"/> containing any data returned from the database. Will also work for non returnning queries such as INSERT, UPDATE etc. The returned <see cref="DataSet"/> will be empty in this case.</summary>
+        /// <param name="sqlQuery">The SQL query to execute.</param>
+        /// <returns>A <see cref="DataSet"/> containing any data returned from the database.</returns>
         /// <exception cref="ArgumentException"/>
         /// <exception cref="SqlException"/>
         /// <exception cref="InvalidOperationException"/>
@@ -80,26 +62,16 @@ namespace Mara.Modules.DataAccess
             {
                 return Process(new SqlCommand(sqlQuery));
             }
-            catch(Exception)
+            catch(Exception e)
             {
                 throw;
             }
         }
 
-        /// <summary>
-        /// Executes the stored procedure with any provided parameters, and returns any data if 
-        /// found.
-        /// </summary>
-        /// <param name="storedProcedureName">
-        /// The name of the stored procedure to call.
-        /// </param>
-        /// <param name="storedProcedureParameters">
-        /// Parameters to the stored procedure. Must have same formal positions as the stored
-        /// procedure itself.
-        /// </param>
-        /// <returns>
-        /// A <see cref="DataSet"/> containing any data returned from the database.
-        /// </returns>
+        /// <summary>Executes the stored procedure with any provided parameters, and returns any data if found.</summary>
+        /// <param name="storedProcedureName">The name of the stored procedure to call.</param>
+        /// <param name="storedProcedureParameters">Parameters to the stored procedure. Must have same formal positions as the storedprocedure itself.</param>
+        /// <returns>A <see cref="DataSet"/> containing any data returned from the database.</returns>
         public virtual DataSet Execute(string storedProcedureName, params string[] storedProcedureParameters)
         {
             if(String.IsNullOrWhiteSpace(storedProcedureName))
@@ -124,14 +96,12 @@ namespace Mara.Modules.DataAccess
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
+        /// <summary>Processes the provided <see cref="SqlCommand"/>.</summary>
+        /// <param name="command">The <see cref="SqlCommand"/> to execute against the database.</param>
+        /// <returns>A <see cref="DataSet"/> containing any data returned from the database.</returns>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="SqlException"/>
-        DataSet Process(SqlCommand command)
+        protected virtual DataSet Process(SqlCommand command)
         {
             if(command is null)
                 throw new ArgumentNullException(nameof(command));
